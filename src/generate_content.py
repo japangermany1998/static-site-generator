@@ -59,4 +59,20 @@ def generate_page(from_path, template_path, dest_path):
     f.close()
 
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    if not os.path.exists(dir_path_content):
+        raise Exception("Folder content not exist")
 
+    if not os.path.isfile(dir_path_content):
+        if not os.path.exists(dest_dir_path):
+            print("create directory:", dest_dir_path)
+            os.mkdir(dest_dir_path)
+    else:
+        print("generate file to directory", dest_dir_path)
+        generate_page(dir_path_content, template_path, os.path.dirname(dest_dir_path))
+        return
+
+    for sub in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, sub)
+        to_path = os.path.join(dest_dir_path, sub)
+
+        generate_pages_recursive(from_path, template_path, to_path)
